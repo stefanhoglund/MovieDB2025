@@ -35,6 +35,7 @@ import com.example.moviedb2025.R
 import com.example.moviedb2025.database.Movies
 import com.example.moviedb2025.models.Movie
 import com.example.moviedb2025.ui.screens.MovieDetailScreen
+import com.example.moviedb2025.ui.screens.MovieDetailPlotScreen
 import com.example.moviedb2025.ui.screens.MovieListItemCard
 import com.example.moviedb2025.ui.screens.MovieListScreen
 import com.example.moviedb2025.ui.theme.MovieDB2025Theme
@@ -43,7 +44,8 @@ import com.example.moviedb2025.viewmodel.MovieDBViewModel
 
 enum class MovieDBScreen(@StringRes val title: Int){
     List(title = R.string.app_name),
-    Detail(title = R.string.movie_detail)
+    Detail(title = R.string.movie_detail),
+    Plot(title = R.string.movie_plot)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,9 +111,19 @@ fun MovieDbApp(viewModel: MovieDBViewModel = viewModel(),
             composable(route = MovieDBScreen.Detail.name){
                 uiState.selectedMovie?.let { movie ->
                     MovieDetailScreen(movie = movie,
+                        modifier = Modifier,
+                        navController = navController)
+                }
+            }
+
+            composable(route = MovieDBScreen.Plot.name){
+                uiState.selectedMovie?.let { movie ->
+                    MovieDetailPlotScreen(movie = movie,
                         modifier = Modifier)
                 }
             }
+
+
         }
 
 
@@ -129,7 +141,11 @@ fun GreetingPreview() {
                 "/pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg",
                 "/gsQJOfeW45KLiQeEIsom94QPQwb.jpg",
                 "2025-02-12",
-                "When a group of radical activists take over an energy company's annual gala, seizing 300 hostages, an ex-soldier turned window cleaner suspended 50 storeys up on the outside of the building must save those trapped inside, including her younger brother."
+                "When a group of radical activists take over an energy company's annual gala, seizing 300 hostages, an ex-soldier turned window cleaner suspended 50 storeys up on the outside of the building must save those trapped inside, including her younger brother.",
+                null,
+                "",
+                ""
+
             ), {}
         )
     }
