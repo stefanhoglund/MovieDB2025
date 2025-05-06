@@ -1,5 +1,9 @@
 package com.example.moviedb2025.ui.screens
 
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,49 +30,50 @@ import com.example.moviedb2025.ui.theme.MovieDB2025Theme
 import com.example.moviedb2025.viewmodel.MovieListUiState
 
 @Composable
-fun MovieListScreen(
-//    movieList: List<Movie>,
+fun MovieGridScreen(
     movieListUiState: MovieListUiState,
     onMovieListItemClicked: (Movie) -> Unit,
-    modifier: Modifier = Modifier) {
-    LazyColumn (modifier = modifier) {
-        when(movieListUiState) {
-            is MovieListUiState.Success -> {
+    modifier: Modifier = Modifier
+) {
+    when (movieListUiState) {
+        is MovieListUiState.Success -> {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3), // 🔥 2 columns
+                modifier = modifier.padding(8.dp) // optional padding
+            ) {
                 items(movieListUiState.movies) { movie ->
-                    MovieListItemCard(
+                    MovieGridItemCard(
                         movie = movie,
                         onMovieListItemClicked,
                         modifier = Modifier.padding(8.dp)
                     )
                 }
             }
+        }
 
-            is MovieListUiState.Loading -> {
-                item {
-                    Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+        is MovieListUiState.Loading -> {
+            // You can still show Loading as a simple Column
+            Column(modifier = modifier.padding(16.dp)) {
+                Text(
+                    text = "Loading...",
+                    style = MaterialTheme.typography.bodySmall,
+                )
             }
+        }
 
-            is MovieListUiState.Error -> {
-                item {
-                    Text(
-                        text = "Error: Something went wrong!",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+        is MovieListUiState.Error -> {
+            Column(modifier = modifier.padding(16.dp)) {
+                Text(
+                    text = "Error: Something went wrong!",
+                    style = MaterialTheme.typography.bodySmall,
+                )
             }
         }
     }
 }
 
-
 @Composable
-fun MovieListItemCard(movie: Movie,
+fun MovieGridItemCard(movie: Movie,
                       onMovieListItemClicked: (Movie) -> Unit,
                       modifier: Modifier = Modifier) {
     Card(modifier = modifier,
@@ -85,29 +90,29 @@ fun MovieListItemCard(movie: Movie,
                         .width(92.dp)
                         .height(138.dp),
                     contentScale = ContentScale.Crop
-                )
+             )
             }
-            Column {
-                Text(
-                    text = movie.title,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-                Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
-
-                Text(
-                    text = movie.releaseDate,
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
-
-                Text(
-                    text = movie.overview,
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
-            }
+//            Column {
+//               Text(
+//                    text = movie.title,
+//                    style = MaterialTheme.typography.bodySmall
+//                )
+//                Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
+//
+//                Text(
+//                    text = movie.releaseDate,
+//                    style = MaterialTheme.typography.bodySmall
+//                )
+//                Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
+//
+//                Text(
+//                    text = movie.overview,
+//                    style = MaterialTheme.typography.bodySmall,
+//                    maxLines = 3,
+//                    overflow = TextOverflow.Ellipsis
+//                )
+//                Spacer(modifier = androidx.compose.ui.Modifier.size(8.dp))
+//            }
         }
     }
 }

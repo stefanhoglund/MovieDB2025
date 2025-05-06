@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,12 +33,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.moviedb2025.R
-import com.example.moviedb2025.database.Movies
+//import com.example.moviedb2025.database.Movies
 import com.example.moviedb2025.models.Movie
 import com.example.moviedb2025.ui.screens.MovieDetailScreen
 import com.example.moviedb2025.ui.screens.MovieDetailPlotScreen
 import com.example.moviedb2025.ui.screens.MovieListItemCard
-import com.example.moviedb2025.ui.screens.MovieListScreen
+//import com.example.moviedb2025.ui.screens.MovieListScreen
+import com.example.moviedb2025.ui.screens.MovieGridScreen
 import com.example.moviedb2025.ui.theme.MovieDB2025Theme
 import com.example.moviedb2025.viewmodel.MovieDBViewModel
 
@@ -75,7 +77,7 @@ fun MovieDBAppBar(
     )
 }
 @Composable
-fun MovieDbApp(viewModel: MovieDBViewModel = viewModel(),
+fun MovieDbApp(viewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory),
                navController: NavHostController = rememberNavController()
 ) {
     val backStackEntity by navController.currentBackStackEntryAsState()
@@ -92,7 +94,8 @@ fun MovieDbApp(viewModel: MovieDBViewModel = viewModel(),
             )
         }
     ) { innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
+//        val uiState by viewModel.uiState.collectAsState()
+        val movieDBViewModel: MovieDBViewModel = viewModel(factory = MovieDBViewModel.Factory)
         NavHost(
             navController = navController,
             startDestination = MovieDBScreen.List.name,
@@ -101,26 +104,42 @@ fun MovieDbApp(viewModel: MovieDBViewModel = viewModel(),
                 .padding(innerPadding)
         ){
             composable(route = MovieDBScreen.List.name){
-                MovieListScreen(
-                    movieList = Movies().getMovies(),
+                MovieGridScreen(
+//                    movieList = Movies().getMovies(),
+                    movieListUiState = movieDBViewModel.movieListUiState,
                     onMovieListItemClicked = { movie ->
-                        viewModel.setSelectedMovie(movie)
+                        viewModel.getMovieDetails(movie.id.toInt())
                         navController.navigate(MovieDBScreen.Detail.name)
                     }, modifier = Modifier.fillMaxSize().padding(16.dp))
             }
-            composable(route = MovieDBScreen.Detail.name){
-                uiState.selectedMovie?.let { movie ->
-                    MovieDetailScreen(movie = movie,
-                        modifier = Modifier,
-                        navController = navController)
-                }
+
+            composable(route = MovieDBScreen.Detail.name) {
+                MovieDetailScreen(
+                    selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
+                    modifier = Modifier,
+                    navController = navController
+                )
             }
 
+//            composable(route = MovieDBScreen.Detail.name){
+//                uiState.selectedMovie?.let { movie ->
+//                    MovieDetailScreen(movie = movie,
+//                        modifier = Modifier,
+//                        navController = navController)
+//                }
+//            }
+//
+
             composable(route = MovieDBScreen.Plot.name){
-                uiState.selectedMovie?.let { movie ->
-                    MovieDetailPlotScreen(movie = movie,
-                        modifier = Modifier)
-                }
+                MovieDetailPlotScreen(
+                    selectedMovieUiState = movieDBViewModel.selectedMovieUiState,
+                    modifier = Modifier,
+                    reviews = movieDBViewModel.movieReviews,
+                    videos = movieDBViewModel.movieVideos,
+                    navController = navController,
+                    onFetchReviews = { movieId -> viewModel.getMovieReviews(movieId) },
+                    onFetchVideos = { movieId -> viewModel.fetchMovieVideos(movieId) }
+                )
             }
 
 
@@ -142,9 +161,9 @@ fun GreetingPreview() {
                 "/gsQJOfeW45KLiQeEIsom94QPQwb.jpg",
                 "2025-02-12",
                 "When a group of radical activists take over an energy company's annual gala, seizing 300 hostages, an ex-soldier turned window cleaner suspended 50 storeys up on the outside of the building must save those trapped inside, including her younger brother.",
-                null,
-                "",
-                ""
+//                "http://google.com",
+//                "",
+//                null
 
             ), {}
         )

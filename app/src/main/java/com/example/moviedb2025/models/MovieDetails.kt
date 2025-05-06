@@ -1,11 +1,9 @@
 package com.example.moviedb2025.models
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data class Movie(
+data class MovieDetails(
     @SerialName(value = "id")
     var id: Long = 0L,
 
@@ -24,12 +22,12 @@ data class Movie(
     @SerialName(value = "overview")
     var overview: String,
 
-//    @SerialName(value = "homePage")
-//    var homePage: String?,
-//
-//    @SerialName(value = "imdb_id")
-//    var imdb_id: String?,
-//
-//    @SerialName(value = "genres")
-//    var genres: List<Long>?
+    @SerialName(value = "homepage")
+    var homePage: String,
+
+    @SerialName(value = "imdb_id")
+    var imdb_id: String,
+
+    @SerialName(value = "genres")
+    var genres: List<Genre>
 )
